@@ -48,6 +48,6 @@ ENV PYTHONUNBUFFERED 1
 
 ENV RUNNING_IN_DEV_CONTAINER true
 
-RUN echo "alias venv='cd ${MAIN_DIR} && python -m venv venv && . ./venv/bin/activate && pip install --upgrade pip && pip install -r requirements.txt'" >> ~/.zshrc
+RUN echo "alias venv='cd ${MAIN_DIR} && python -m venv venv && . ./venv/bin/activate && pip install --upgrade pip && pip install -r dev-requirements.txt'" >> ~/.zshrc
 
 CMD ["/bin/zsh"]
