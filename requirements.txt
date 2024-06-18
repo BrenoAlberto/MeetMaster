@@ -1,3 +1,5 @@
 Django==5.0.6
 tzdata==2024.1
 python-decouple==3.8
+psycopg==3.1.19
+psycopg-binary==3.1.19
