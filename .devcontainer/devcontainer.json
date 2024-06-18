@@ -1,0 +1,33 @@
+{
+    "name": "MeetMaster Dev Container",
+    "dockerComposeFile": "./docker-compose-dev.yml",
+    "runArgs": [
+        "--env-file",
+        "./.env"
+    ],
+    "service": "dev",
+    "workspaceFolder": "/home/meet-dev/MeetMaster",
+    "customizations": {
+        "vscode": {
+            "settings": {
+                "terminal.integrated.defaultProfile.linux": "zsh",
+                "terminal.integrated.profiles.linux": {
+                    "zsh": {
+                        "path": "/bin/zsh"
+                    }
+                }
+            },
+            "extensions": [
+                "batisteo.vscode-django",
+                "github.copilot",
+                "ms-azuretools.vscode-docker",
+                "monosans.djlint",
+                "ms-python.black-formatter",
+                "ms-python.debugpy",
+                "ms-python.isort",
+                "ms-python.python",
+                "ms-python.vscode-pylance"
+            ]
+        }
+    }
+}

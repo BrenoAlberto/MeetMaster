@@ -1,0 +1,50 @@
+networks:
+  my_network:
+    driver: bridge
+
+services:
+  dev:
+    build:
+      context: ../
+      dockerfile: .devcontainer/Dockerfile
+      args:
+        - USER_ID=${USER_ID}
+        - GROUP_ID=${GROUP_ID}
+        - USER_NAME=${USER_NAME}
+        - MAIN_LOCAL_DIR=${MAIN_LOCAL_DIR}
+        - USER_HOME=${USER_HOME}
+        - MAIN_DIR=${MAIN_DIR}
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    env_file:
+      - path: ./.env
+        required: true
+    volumes:
+      - ~/.zsh_history:${USER_HOME}/.zsh_history:rw
+      - ${MAIN_LOCAL_DIR}:${MAIN_DIR}/:rw
+      - /usr/bin/gh:/usr/bin/gh:ro
+    depends_on:
+      - redis
+      - db
+    networks:
+      - my_network
+    tty: true
+
+  redis:
+    image: redis:7.0.11-alpine
+    networks:
+      - my_network
+
+  db:
+    image: postgres:16.2
+    restart: always
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    networks:
+      - my_network
