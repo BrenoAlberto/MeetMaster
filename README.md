@@ -27,4 +27,10 @@ bash ./.devcontainer/scripts/setup_build_env_vars.sh
 
 - Ctrl+Shift+P -> Dev Container: Open Folder in Container
 
+Wait for the container to build and when it's done run the following to setup/enter the virtual environment.
+
+```sh
+venv
+```
+
 ---
