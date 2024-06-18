@@ -48,6 +48,6 @@ ENV PYTHONUNBUFFERED 1
 
 ENV RUNNING_IN_DEV_CONTAINER true
 
-RUN echo "alias venv='bash ${MAIN_DIR}/.devcontainer/scripts/start.sh'" >> ~/.zshrc
+RUN echo "alias venv='source ${MAIN_DIR}/.devcontainer/scripts/start.sh'" >> ~/.zshrc
 
 CMD ["/bin/zsh"]
