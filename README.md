@@ -21,7 +21,7 @@ Running the following commands will setup a development container with all the n
 - Build dev container environment variables
 ```sh
 bash ./.devcontainer/scripts/setup_build_env_vars.sh
-``` 
+```
 
 - Open the project in VSCode
 

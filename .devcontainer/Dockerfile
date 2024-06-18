@@ -1,7 +1,7 @@
 FROM ubuntu:22.04
 
 # Install dependencies
-RUN apt-get update && apt-get install wget git sudo -y 
+RUN apt-get update && apt-get install wget git sudo -y
 
 # Set up user
 ARG USER_ID
@@ -48,6 +48,6 @@ ENV PYTHONUNBUFFERED 1
 
 ENV RUNNING_IN_DEV_CONTAINER true
 
-RUN echo "alias venv='cd ${MAIN_DIR} && python -m venv venv && . ./venv/bin/activate && pip install --upgrade pip && pip install -r dev-requirements.txt'" >> ~/.zshrc
+RUN echo "alias venv='bash ${MAIN_DIR}/.devcontainer/scripts/start.sh'" >> ~/.zshrc
 
 CMD ["/bin/zsh"]
