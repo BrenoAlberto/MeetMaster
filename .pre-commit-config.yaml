@@ -18,13 +18,21 @@ repos:
       - id: isort
         name: isort (python)
         args: ["--settings-path=./pyproject.toml"]
-  # - repo: https://github.com/pycqa/flake8
-  #   rev: 7.1.0
-  #   hooks:
-  #     - id: flake8
-  #       args: ["--config=./pyproject.toml"]
+  - repo: https://github.com/pycqa/flake8
+    rev: 7.1.0
+    hooks:
+      - id: flake8
+        args: ["--config=./pyproject.toml"]
   - repo: https://github.com/Riverside-Healthcare/djLint
     rev: v1.34.1
     hooks:
       - id: djlint-django
         args: ["--config=./pyproject.toml"]
+  - repo: local
+    hooks:
+      - id: django-test
+        name: django-test
+        entry: python ./meetmaster/manage.py test
+        always_run: true
+        pass_filenames: false
+        language: system
