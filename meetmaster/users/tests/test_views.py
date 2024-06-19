@@ -1,17 +1,22 @@
+from django.contrib.auth import get_user_model
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
-from users.models import CustomUser
 
 
 class UserViewSetTests(APITestCase):
 
     def setUp(self):
-        self.admin_user = CustomUser.objects.create_superuser(
+        self.custom_user = get_user_model()
+        self.admin_user = self.custom_user.objects.create_superuser(
             username="admin", password="adminpassword123", email="admin@example.com"
         )
-        self.user1 = CustomUser.objects.create_user(username="user1", password="password123", email="user1@example.com")
-        self.user2 = CustomUser.objects.create_user(username="user2", password="password123", email="user2@example.com")
+        self.user1 = self.custom_user.objects.create_user(
+            username="user1", password="password123", email="user1@example.com"
+        )
+        self.user2 = self.custom_user.objects.create_user(
+            username="user2", password="password123", email="user2@example.com"
+        )
 
     def test_list_users_as_superuser(self):
         self.client.login(username="admin", password="adminpassword123")
@@ -83,14 +88,14 @@ class UserViewSetTests(APITestCase):
         url = reverse("customuser-detail", kwargs={"pk": self.user1.pk})
         response = self.client.delete(url)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertEqual(CustomUser.objects.count(), 2)
+        self.assertEqual(self.custom_user.objects.count(), 2)
 
     def test_delete_user_as_superuser(self):
         self.client.login(username="admin", password="adminpassword123")
         url = reverse("customuser-detail", kwargs={"pk": self.user1.pk})
         response = self.client.delete(url)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertEqual(CustomUser.objects.count(), 2)
+        self.assertEqual(self.custom_user.objects.count(), 2)
 
     def test_delete_user_as_other(self):
         self.client.login(username="user1", password="password123")

@@ -1,19 +1,21 @@
 from datetime import date, time
 
+from django.contrib.auth import get_user_model
 from django.test import TestCase
+from django.utils import timezone
 from events.models import Event
 from events.serializers import EventSerializer
-from users.models import CustomUser
 
 
 class EventSerializerTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.user = CustomUser.objects.create_user(username="testuser", password="testpassword")
+        cls.custom_user = get_user_model()
+        cls.user = cls.custom_user.objects.create_user(username="testuser", password="testpassword")
         cls.event = Event.objects.create(
             title="Test Event",
             description="This is a test event",
-            date=date.today(),
+            date=date.today() + timezone.timedelta(days=1),
             time=time(10, 30),
             location="Test Location",
             created_by=cls.user,

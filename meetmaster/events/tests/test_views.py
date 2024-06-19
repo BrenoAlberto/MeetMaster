@@ -1,22 +1,23 @@
 from datetime import date, time
 
+from django.contrib.auth import get_user_model
 from django.urls import reverse
 from django.utils import timezone
 from events.models import Event
 from rest_framework import status
 from rest_framework.test import APITestCase
-from users.models import CustomUser
 
 
 class EventViewSetTests(APITestCase):
 
     def setUp(self):
-        self.user1 = CustomUser.objects.create_user(username="user1", password="password123")
-        self.user2 = CustomUser.objects.create_user(username="user2", password="password123")
+        self.custom_user = get_user_model()
+        self.user1 = self.custom_user.objects.create_user(username="user1", password="password123")
+        self.user2 = self.custom_user.objects.create_user(username="user2", password="password123")
         self.event1 = Event.objects.create(
             title="Event 1",
             description="Description for event 1",
-            date=timezone.now().date(),
+            date=date.today() + timezone.timedelta(days=1),
             time=timezone.now().time(),
             location="Location 1",
             created_by=self.user1,
@@ -28,7 +29,7 @@ class EventViewSetTests(APITestCase):
         data = {
             "title": "New Event",
             "description": "Description for new event",
-            "date": date.today(),
+            "date": date.today() + timezone.timedelta(days=1),
             "time": time(12, 0),
             "location": "Location 1",
         }
@@ -74,3 +75,18 @@ class EventViewSetTests(APITestCase):
         self.client.login(username="user2", password="password123")
         response = self.client.get(reverse("event-attendees", kwargs={"pk": self.event1.pk}))
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_notify_date_change(self):
+        self.client.login(username="user1", password="password123")
+        url = reverse("event-change-date", args=[self.event1.id])
+        data = {"date": date.today() + timezone.timedelta(days=1), "time": time(12, 0)}
+        response = self.client.post(url, data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["status"], "Date changed and notification sent")
+
+    def test_notify_event_cancel(self):
+        self.client.login(username="user1", password="password123")
+        url = reverse("event-cancel", args=[self.event1.id])
+        response = self.client.post(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["status"], "Event canceled and notification sent")
