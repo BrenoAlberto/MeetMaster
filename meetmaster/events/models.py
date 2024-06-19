@@ -48,3 +48,12 @@ class Event(models.Model):
 
     def __str__(self):
         return f"{self.title} ({self.date} {self.time})"
+
+
+class Notification(models.Model):
+    event = models.ForeignKey(Event, on_delete=models.CASCADE)
+    message = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Notification for {self.event.title} at {self.created_at}"
