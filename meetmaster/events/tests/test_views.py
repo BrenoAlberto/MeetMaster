@@ -1,18 +1,19 @@
 from datetime import date, time
 
+from django.contrib.auth import get_user_model
 from django.urls import reverse
 from django.utils import timezone
 from events.models import Event
 from rest_framework import status
 from rest_framework.test import APITestCase
-from users.models import CustomUser
 
 
 class EventViewSetTests(APITestCase):
 
     def setUp(self):
-        self.user1 = CustomUser.objects.create_user(username="user1", password="password123")
-        self.user2 = CustomUser.objects.create_user(username="user2", password="password123")
+        self.custom_user = get_user_model()
+        self.user1 = self.custom_user.objects.create_user(username="user1", password="password123")
+        self.user2 = self.custom_user.objects.create_user(username="user2", password="password123")
         self.event1 = Event.objects.create(
             title="Event 1",
             description="Description for event 1",

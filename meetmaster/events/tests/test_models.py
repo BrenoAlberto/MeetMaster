@@ -1,14 +1,15 @@
 from datetime import date, time, timedelta
 
+from django.contrib.auth import get_user_model
 from django.test import TestCase
 from events.models import Event
-from users.models import CustomUser
 
 
 class EventModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.user = CustomUser.objects.create_user(username="testuser", password="testpassword")
+        cls.custom_user = get_user_model()
+        cls.user = cls.custom_user.objects.create_user(username="testuser", password="testpassword")
 
     def create_event(self, event_date, event_time):
         return Event.objects.create(
