@@ -1,3 +1,5 @@
+from datetime import date, time
+
 from django.urls import reverse
 from django.utils import timezone
 from events.models import Event
@@ -19,6 +21,21 @@ class EventViewSetTests(APITestCase):
             location="Location 1",
             created_by=self.user1,
         )
+
+    def test_create_event(self):
+        self.client.login(username="user1", password="password123")
+        url = reverse("event-list")
+        data = {
+            "title": "New Event",
+            "description": "Description for new event",
+            "date": date.today(),
+            "time": time(12, 0),
+            "location": "Location 1",
+        }
+        response = self.client.post(url, data)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        new_event = Event.objects.get(id=response.data["id"])
+        self.assertEqual(new_event.created_by, self.user1)
 
     def test_list_events(self):
         response = self.client.get(reverse("event-list"))
