@@ -20,7 +20,7 @@ class Event(models.Model):
     updated = models.DateTimeField(auto_now=True)
     status = models.CharField(max_length=2, choices=Status.choices, blank=True, null=True)
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
-    attendees = models.ManyToManyField(User, related_name="attendees", blank=True)
+    attendees = models.ManyToManyField(User, related_name="event_attendees", blank=True)
 
     class Meta:
         ordering = ["-date", "-time"]

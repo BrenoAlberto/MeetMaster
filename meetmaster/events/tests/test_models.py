@@ -2,8 +2,7 @@ from datetime import date, time, timedelta
 
 from django.contrib.auth.models import User
 from django.test import TestCase
-
-from .models import Event
+from events.models import Event
 
 
 class EventModelTest(TestCase):
