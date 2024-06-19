@@ -45,6 +45,9 @@ INSTALLED_APPS = [
     "events",
 ]
 
+if config("DJANGO_DEVELOPMENT", default=False, cast=bool):
+    INSTALLED_APPS.append("django_extensions")
+
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
