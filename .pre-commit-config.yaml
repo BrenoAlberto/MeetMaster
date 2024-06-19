@@ -1,4 +1,4 @@
-exclude: .*migrations\/.*
+exclude: ^migrations\/|^\.devcontainer\/|^\.vscode\/|^\.gitignore
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.5.0
@@ -28,3 +28,11 @@ repos:
     hooks:
       - id: djlint-django
         args: ["--config=./pyproject.toml"]
+  - repo: local
+    hooks:
+      - id: django-test
+        name: django-test
+        entry: python ./meetmaster/manage.py test
+        always_run: true
+        pass_filenames: false
+        language: system

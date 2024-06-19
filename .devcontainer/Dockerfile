@@ -50,4 +50,6 @@ ENV RUNNING_IN_DEV_CONTAINER true
 
 RUN echo "alias venv='source ${MAIN_DIR}/.devcontainer/scripts/start.sh'" >> ~/.zshrc
 
+ENV PRE_COMMIT_HOME=${MAIN_DIR}/.devcontainer/pre-commit
+
 CMD ["/bin/zsh"]
