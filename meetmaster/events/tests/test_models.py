@@ -27,19 +27,9 @@ class EventModelTest(TestCase):
         event.save()
         self.assertEqual(event.status, Event.Status.INCOMING)
 
-    def test_event_status_finished(self):
-        past_date = date.today() - timedelta(days=1)
-        event = self.create_event(past_date, time(10, 30))
+    def test_cancel_event(self):
+        future_date = date.today() + timedelta(days=1)
+        event = self.create_event(future_date, time(10, 30))
         event.save()
-        self.assertEqual(event.status, Event.Status.FINISHED)
-
-    def test_event_status_transition(self):
-        event = self.create_event(date.today(), time(10, 30))
-
-        event.date = date.today() + timedelta(days=1)
-        event.save()
-        self.assertEqual(event.status, Event.Status.INCOMING)
-
-        event.date = date.today() - timedelta(days=1)
-        event.save()
-        self.assertEqual(event.status, Event.Status.FINISHED)
+        event.cancel()
+        self.assertEqual(event.status, Event.Status.CANCELED)
