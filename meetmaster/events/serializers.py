@@ -5,7 +5,8 @@ from .models import Event
 
 class EventSerializer(serializers.ModelSerializer):
     total_attendees = serializers.SerializerMethodField()
-    status = serializers.CharField(source="get_status_display")
+    status = serializers.CharField(source="get_status_display", read_only=True)
+    created_by = serializers.ReadOnlyField(source="created_by.username")
 
     class Meta:
         model = Event
@@ -18,6 +19,7 @@ class EventSerializer(serializers.ModelSerializer):
             "location",
             "updated",
             "status",
+            "created_by",
             "total_attendees",
         ]
 

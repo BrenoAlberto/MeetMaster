@@ -11,6 +11,9 @@ class EventViewSet(viewsets.ModelViewSet):
     serializer_class = EventSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
+    def perform_create(self, serializer):
+        serializer.save(created_by=self.request.user)
+
     @action(detail=True, methods=["get"])
     def attendees(self, request, pk=None):
         event = self.get_object()
