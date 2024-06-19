@@ -1,4 +1,5 @@
 .env
-/notes
-/venv
+notes/
+venv/
 */pre-commit
+media/

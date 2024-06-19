@@ -1,4 +1,4 @@
-exclude: ^migrations\/|^\.devcontainer\/|^\.vscode\/|^\.gitignore
+exclude: .*(migrations\/|\.devcontainer\/|\.vscode\/|\.gitignore).*
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.5.0
