@@ -3,5 +3,5 @@ from django.db import models
 
 
 class CustomUser(AbstractUser):
-    profile_image = models.ImageField(upload_to="profiles/", blank=True, null=True)
+    profile_image = models.ImageField(upload_to="media/", blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
