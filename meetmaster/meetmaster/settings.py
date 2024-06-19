@@ -147,3 +147,21 @@ REST_FRAMEWORK = {
 }
 
 AUTH_USER_MODEL = "users.CustomUser"
+
+CELERY_BROKER_URL = config("CELERY_BROKER_URL")
+CELERY_RESULT_BACKEND = config("CELERY_RESULT_BACKEND")
+
+CELERY_ACCEPT_CONTENT = ["json"]
+CELERY_TASK_SERIALIZER = "json"
+CELERY_RESULT_SERIALIZER = "json"
+CELERY_TIMEZONE = "UTC"
+
+DEFAULT_FROM_EMAIL = config("DEFAULT_FROM_EMAIL")
+if config("EMAIL_HOST", default=None):
+    EMAIL_HOST = config("EMAIL_HOST")
+    EMAIL_HOST_USER = config("EMAIL_HOST_USER")
+    EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD")
+    EMAIL_PORT = config("EMAIL_PORT", cast=int, default=587)
+    EMAIL_USE_TLS = config("EMAIL_USE_TLS", cast=bool, default=True)
+else:
+    EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
