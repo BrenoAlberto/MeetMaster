@@ -25,3 +25,8 @@ class EventSerializer(serializers.ModelSerializer):
 
     def get_total_attendees(self, obj):
         return obj.attendees.count()
+
+
+class ChangeDateSerializer(serializers.Serializer):
+    date = serializers.DateField()
+    time = serializers.TimeField()

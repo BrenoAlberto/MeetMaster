@@ -3,7 +3,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from .models import Event
-from .serializers import EventSerializer
+from .serializers import ChangeDateSerializer, EventSerializer
 from .tasks import send_notification
 
 
@@ -17,14 +17,12 @@ class EventViewSet(viewsets.ModelViewSet):
 
     def change_date(self, request, pk=None):
         event = self.get_object()
-        new_date = request.data.get("date")
-        new_time = request.data.get("time")
 
-        if not new_date or not new_time:
-            return Response(
-                {"detail": "Both date and time fields are required."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+        serializer = ChangeDateSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        new_date = serializer.validated_data["date"]
+        new_time = serializer.validated_data["time"]
 
         event.date = new_date
         event.time = new_time
