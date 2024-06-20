@@ -17,8 +17,7 @@ class SendNotificationTaskTest(TestCase):
         self.event = Event.objects.create(
             title="Event 1",
             description="Description for event 1",
-            date=timezone.now().date() + timezone.timedelta(days=1),
-            time=timezone.now().time(),
+            date=timezone.now() + timezone.timedelta(days=1),
             location="Location 1",
             owner=self.user1,
         )

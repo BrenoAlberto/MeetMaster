@@ -13,5 +13,5 @@ class EventAdmin(admin.ModelAdmin):
     search_fields = ["title", "description"]
     raw_id_fields = ["owner"]
     date_hierarchy = "date"
-    ordering = ["-date", "-time"]
+    ordering = ["-date"]
     show_facets = admin.ShowFacets.ALWAYS

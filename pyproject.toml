@@ -14,3 +14,6 @@ max-line-length=120
 [tool.djlint]
 profile="django"
 ignore = "H031"
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "meetmaster.settings"

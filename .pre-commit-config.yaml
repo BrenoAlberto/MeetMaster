@@ -30,9 +30,10 @@ repos:
         args: ["--config=./pyproject.toml"]
   - repo: local
     hooks:
-      - id: django-test
-        name: django-test
-        entry: python ./meetmaster/manage.py test
+      - id: pytest
+        name: pytest
+        entry:  pytest meetmaster -n 4
+        types: [python]
         always_run: true
         pass_filenames: false
         language: system
