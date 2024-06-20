@@ -4,7 +4,7 @@ from rest_framework import viewsets
 from rest_framework.permissions import AllowAny, IsAuthenticated
 
 from .models import CustomUser
-from .serializers import DetailedUserSerializer, PublicUserSerializer, UserUpdateSerializer
+from .serializers import DetailedUserSerializer, PublicUserSerializer, UserCreateSerializer, UserUpdateSerializer
 
 
 @extend_schema_view(
@@ -22,6 +22,15 @@ from .serializers import DetailedUserSerializer, PublicUserSerializer, UserUpdat
         responses={
             200: DetailedUserSerializer,
             403: None,
+        },
+    ),
+    create=extend_schema(
+        summary="Create a new user",
+        description="Allows creation of a new user.",
+        request=UserCreateSerializer,
+        responses={
+            201: DetailedUserSerializer,
+            400: None,
         },
     ),
     update=extend_schema(
@@ -55,16 +64,19 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all().order_by("id")
 
     def get_serializer_class(self):
-        if self.action == "retrieve":
+        if self.action == "create":
+            return UserCreateSerializer
+        elif self.action == "retrieve":
             return DetailedUserSerializer if self.request.user.is_superuser else PublicUserSerializer
         elif self.action in ["update", "partial_update"]:
-            return DetailedUserSerializer if self.request.user.is_superuser else UserUpdateSerializer
+            return UserUpdateSerializer
         return PublicUserSerializer
 
     def get_permissions(self):
         permission_classes = {
             "list": [IsAuthenticated, IsSuperUser],
             "retrieve": [IsAuthenticated],
+            "create": [AllowAny],
             "update": [IsAuthenticated, IsSuperUserOrSelf],
             "partial_update": [IsAuthenticated, IsSuperUserOrSelf],
             "destroy": [IsAuthenticated, IsSuperUserOrSelf],

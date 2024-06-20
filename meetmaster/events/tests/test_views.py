@@ -18,9 +18,9 @@ def api_client():
 @pytest.fixture
 def create_users():
     custom_user = get_user_model()
-    user1 = custom_user.objects.create_user(username="user1", password="password")
-    user2 = custom_user.objects.create_user(username="user2", password="password")
-    return {"custom_user": custom_user, "user1": user1, "user2": user2}
+    user1 = custom_user.objects.create_user(username="user1", email="email1@mail.com", password="password")
+    user2 = custom_user.objects.create_user(username="user2", email="email2@mail.com", password="password")
+    return {"user1": user1, "user2": user2}
 
 
 @pytest.fixture

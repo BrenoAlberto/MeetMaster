@@ -1,6 +1,10 @@
+from io import BytesIO
+
 import pytest
 from django.contrib.auth import get_user_model
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.urls import reverse
+from PIL import Image
 from rest_framework import status
 from rest_framework.test import APIClient
 
@@ -28,6 +32,14 @@ def create_users():
 
 def login(api_client, username, password):
     api_client.login(username=username, password=password)
+
+
+def create_test_image_file():
+    file = BytesIO()
+    image = Image.new("RGB", (100, 100), color=(73, 109, 137))
+    image.save(file, "jpeg")
+    file.seek(0)
+    return SimpleUploadedFile("test_image.jpg", file.read(), content_type="image/jpeg")
 
 
 @pytest.mark.django_db
@@ -123,3 +135,47 @@ class TestUserViewSet:
         response = api_client.delete(url)
         assert response.status_code == expected_status
         assert custom_user.objects.count() == expected_count
+
+    def test_user_creation(self, api_client):
+        url = reverse("customuser-list")
+        data = {
+            "username": "new_user",
+            "password": "new_password",
+            "email": "new_user@example.com",
+        }
+        response = api_client.post(url, data)
+        new_user = get_user_model().objects.get(username="new_user")
+        assert response.status_code == status.HTTP_201_CREATED
+        assert new_user.email == data["email"]
+        assert new_user.username == data["username"]
+
+    def test_user_profile_image_upload(self, api_client, create_users):
+        user1 = create_users["user1"]
+        login(api_client, "user1", "password")
+        url = reverse("customuser-detail", kwargs={"pk": user1.pk})
+        image = create_test_image_file()
+        data = {"profile_image": image}
+        response = api_client.patch(url, data, format="multipart")
+        print(response.data)
+        assert response.status_code == status.HTTP_200_OK
+
+    def test_email_uniqueness(self, api_client, create_users):
+        url = reverse("customuser-list")
+        data = {
+            "username": "duplicate_email_user",
+            "password": "new_password",
+            "email": create_users["user1"].email,
+        }
+        response = api_client.post(url, data)
+        assert response.status_code == status.HTTP_400_BAD_REQUEST
+        assert "email" in response.data
+
+    # def test_user_can_change_password(self, api_client, create_users):
+    #     user1 = create_users["user1"]
+    #     login(api_client, "user1", "password")
+    #     url = reverse("customuser-change-password", kwargs={"pk": user1.pk})
+    #     data = {"old_password": "password", "new_password": "new_password"}
+    #     response = api_client.post(url, data)
+    #     assert response.status_code == status.HTTP_200_OK
+    #     user1.refresh_from_db()
+    #     assert user1.check_password("new_password")
