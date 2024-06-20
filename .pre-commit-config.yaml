@@ -28,12 +28,11 @@ repos:
     hooks:
       - id: djlint-django
         args: ["--config=./pyproject.toml"]
-  - repo: local
+  - repo: local # TODO: the change from django test to pytest made this hook a lot slower
     hooks:
       - id: pytest
         name: pytest
-        entry:  pytest meetmaster -n 4
+        entry:  pytest
         types: [python]
-        always_run: true
-        pass_filenames: false
+        pass_filenames: true
         language: system
