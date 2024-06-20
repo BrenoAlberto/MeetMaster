@@ -20,14 +20,14 @@ class Event(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     status = models.CharField(max_length=2, choices=Status.choices, default=Status.INCOMING)
-    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="created_events", on_delete=models.CASCADE)
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="created_events", on_delete=models.CASCADE)
     attendees = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name="attended_events", blank=True)
 
     class Meta:
         ordering = ["-date", "-time"]
         indexes = [
             models.Index(fields=["-date", "-time", "status"]),
-            models.Index(fields=["created_by"]),
+            models.Index(fields=["owner"]),
         ]
 
     def clean(self):

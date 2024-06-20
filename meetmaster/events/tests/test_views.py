@@ -20,7 +20,7 @@ class EventViewSetTests(APITestCase):
             date=date.today() + timezone.timedelta(days=1),
             time=timezone.now().time(),
             location="Location 1",
-            created_by=self.user1,
+            owner=self.user1,
         )
 
     def test_create_event(self):
@@ -36,7 +36,7 @@ class EventViewSetTests(APITestCase):
         response = self.client.post(url, data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         new_event = Event.objects.get(id=response.data["id"])
-        self.assertEqual(new_event.created_by, self.user1)
+        self.assertEqual(new_event.owner, self.user1)
 
     def test_list_events(self):
         response = self.client.get(reverse("event-list"))

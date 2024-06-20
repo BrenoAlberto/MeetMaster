@@ -18,7 +18,7 @@ class EventSerializerTest(TestCase):
             date=date.today() + timezone.timedelta(days=1),
             time=time(10, 30),
             location="Test Location",
-            created_by=cls.user,
+            owner=cls.user,
         )
 
     def test_total_attendees(self):

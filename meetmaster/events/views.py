@@ -13,9 +13,8 @@ class EventViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def perform_create(self, serializer):
-        serializer.save(created_by=self.request.user)
+        serializer.save(owner=self.request.user)
 
-    @action(detail=True, methods=["post"], url_path="change-date")
     def change_date(self, request, pk=None):
         event = self.get_object()
         new_date = request.data.get("date")
@@ -58,7 +57,7 @@ class EventViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=["get"])
     def attendees(self, request, pk=None):
         event = self.get_object()
-        if request.user == event.created_by:
+        if request.user == event.owner or request.user in event.attendees.all():
             attendees = event.attendees.all()
             attendee_data = [{"id": attendee.id, "username": attendee.username} for attendee in attendees]
             return Response(attendee_data)

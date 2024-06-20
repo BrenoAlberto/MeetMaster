@@ -18,7 +18,7 @@ class EventModelTest(TestCase):
             date=event_date,
             time=event_time,
             location="Test Location",
-            created_by=self.user,
+            owner=self.user,
         )
 
     def test_event_status_incoming(self):

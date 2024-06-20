@@ -20,7 +20,7 @@ class SendNotificationTaskTest(TestCase):
             date=timezone.now().date() + timezone.timedelta(days=1),
             time=timezone.now().time(),
             location="Location 1",
-            created_by=self.user1,
+            owner=self.user1,
         )
         self.event.attendees.add(self.user1, self.user2)
 
