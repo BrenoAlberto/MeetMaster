@@ -1,3 +1,4 @@
+from common.permissions import IsAttendee, IsOwner
 from rest_framework import permissions, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -15,6 +16,9 @@ class EventViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
 
+    @action(
+        detail=True, methods=["post"], url_path="change-date", permission_classes=[permissions.IsAuthenticated, IsOwner]
+    )
     def change_date(self, request, pk=None):
         event = self.get_object()
 
@@ -35,7 +39,7 @@ class EventViewSet(viewsets.ModelViewSet):
 
         return Response({"status": "Date changed and notification sent"}, status=status.HTTP_200_OK)
 
-    @action(detail=True, methods=["post"], url_path="cancel")
+    @action(detail=True, methods=["post"], url_path="cancel", permission_classes=[permissions.IsAuthenticated, IsOwner])
     def cancel(self, request, pk=None):
         event = self.get_object()
 
@@ -52,7 +56,7 @@ class EventViewSet(viewsets.ModelViewSet):
 
         return Response({"status": "Event canceled and notification sent"}, status=status.HTTP_200_OK)
 
-    @action(detail=True, methods=["get"])
+    @action(detail=True, methods=["get"], permission_classes=[permissions.IsAuthenticated, IsOwner | IsAttendee])
     def attendees(self, request, pk=None):
         event = self.get_object()
         if request.user == event.owner or request.user in event.attendees.all():
@@ -62,14 +66,14 @@ class EventViewSet(viewsets.ModelViewSet):
         else:
             return Response({"detail": "Not authorized to view attendee details"}, status=status.HTTP_403_FORBIDDEN)
 
-    @action(detail=True, methods=["post"])
+    @action(detail=True, methods=["post"], permission_classes=[permissions.IsAuthenticated])
     def add_attendee(self, request, pk=None):
         event = self.get_object()
         attendee = request.user
         event.attendees.add(attendee)
         return Response({"status": "attendee added"}, status=status.HTTP_200_OK)
 
-    @action(detail=True, methods=["post"])
+    @action(detail=True, methods=["post"], permission_classes=[permissions.IsAuthenticated])
     def remove_attendee(self, request, pk=None):
         event = self.get_object()
         attendee = request.user
