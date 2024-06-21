@@ -1,36 +1,86 @@
-# MeetMaster - Event Management System  ---- DRAFT
+# MeetMaster - Event Management System
 
----
-
-## Devolopment Environment Setup
+## Development Environment Setup
 
 ### Local Requirements
 
 - Docker
 - (Optional) VSCode and Dev Containers (ms-vscode-remote.remote-containers)
 
-You can omit the following requirements if you are using VSCode with Dev Containers.
+<details>
+<summary><strong>Setting Up Development Container with VSCode</strong></summary>
 
-- Python 3.10
+Follow these steps to set up a development container with all the necessary tools and dependencies for the project.
 
+1. Build dev container environment variables:
+    ```sh
+    bash ./.devcontainer/scripts/setup_build_env_vars.sh
+    ```
 
-### Development container with VSCode .devcontainer
+2. Open the project in VSCode.
 
-Running the following commands will setup a development container with all the necessary tools and dependencies for the project.
+3. Use the command palette (Ctrl+Shift+P) and select:
+    ```
+    Dev Container: Open Folder in Container
+    ```
 
-- Build dev container environment variables
-```sh
-bash ./.devcontainer/scripts/setup_build_env_vars.sh
-```
+4. Wait for the container to build. Once the build is complete, set up/enter the virtual environment:
+    ```sh
+    venv
+    ```
 
-- Open the project in VSCode
+</details>
 
-- Ctrl+Shift+P -> Dev Container: Open Folder in Container
+<details>
+<summary><strong>Running the Developer Container without VSCode Dev Containers</strong></summary>
 
-Wait for the container to build and when it's done run the following to setup/enter the virtual environment.
+If you prefer not to use VSCode Dev Containers, you can run the developer container using Docker directly:
 
-```sh
-venv
-```
+1. Navigate to the `.devcontainer` directory and set up environment variables:
+    ```sh
+    cd .devcontainer && bash ./scripts/setup_build_env_vars.sh
+    ```
 
----
+2. Run the developer container:
+    ```sh
+    docker compose -f docker-compose-dev.yml run dev zsh
+    ```
+
+3. When the container is running, activate the virtual environment:
+    ```sh
+    venv
+    ```
+
+4. Run the tests with:
+    ```sh
+    pytest meetmaster -n auto
+    ```
+
+5. Or run the server with:
+    ```sh
+    python meetmaster/manage.py runserver [PORT - optional]
+    ```
+
+</details>
+
+<details>
+<summary><strong>Running the Production Container</strong></summary>
+
+To run the production container, execute the following commands:
+
+1. Bring down any existing containers:
+    ```sh
+    docker compose down
+    ```
+
+2. Build the production container:
+    ```sh
+    docker compose build
+    ```
+
+3. Start the production container:
+    ```sh
+    docker compose up
+    ```
+
+</details>
