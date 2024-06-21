@@ -148,56 +148,29 @@ class TestEventViewSet:
         assert response.status_code == status.HTTP_400_BAD_REQUEST
         assert "Events cannot be created in the past." in response.data["date"]
 
-    def test_auth_user_can_only_patch_status_to_cancel(self, api_client, create_users, create_event):
+    def test_owner_can_cacel_event(self, api_client, create_users, create_event):
         user1 = create_users["user1"]
         login(api_client, user1.username, "password")
-        data = {"status": Event.Status.CANCELED}
-        response = patch_event(api_client, create_event.pk, data)
+        response = api_client.post(reverse("event-cancel", kwargs={"pk": create_event.pk}))
         assert response.status_code == status.HTTP_200_OK
         create_event.refresh_from_db()
         assert create_event.status == Event.Status.CANCELED
-
-        data = {"status": Event.Status.INCOMING}
-        response = patch_event(api_client, create_event.pk, data)
-        assert response.status_code == status.HTTP_400_BAD_REQUEST
-        assert "Status can only be updated to 'Canceled'." in response.data["status"]
 
     def test_not_notified_twice_on_double_cancel(
         self, api_client, create_users, create_event, mock_send_notification_to_all_attendees
     ):
         user1 = create_users["user1"]
         login(api_client, user1.username, "password")
-        data = {"status": Event.Status.CANCELED}
-        patch_event(api_client, create_event.pk, data)
+        api_client.post(reverse("event-cancel", kwargs={"pk": create_event.pk}))
         create_event.refresh_from_db()
 
         mock_send_notification_to_all_attendees.assert_called_once()
         mock_send_notification_to_all_attendees.reset_mock()
 
-        patch_event(api_client, create_event.pk, data)
+        api_client.post(reverse("event-cancel", kwargs={"pk": create_event.pk}))
         create_event.refresh_from_db()
 
         mock_send_notification_to_all_attendees.assert_not_called()
-
-    def test_auth_user_can_only_update_status_to_cancel(self, api_client, create_users, create_event):
-        user1 = create_users["user1"]
-        login(api_client, user1.username, "password")
-        data = {
-            "title": create_event.title,
-            "description": create_event.description,
-            "date": create_event.date,
-            "location": create_event.location,
-            "status": Event.Status.CANCELED,
-        }
-        response = put_event(api_client, create_event.pk, data)
-        assert response.status_code == status.HTTP_200_OK
-        create_event.refresh_from_db()
-        assert create_event.status == Event.Status.CANCELED
-
-        data["status"] = Event.Status.INCOMING
-        response = put_event(api_client, create_event.pk, data)
-        assert response.status_code == status.HTTP_400_BAD_REQUEST
-        assert "Status can only be updated to 'Canceled'." in response.data["status"]
 
     def test_any_user_can_list_events(self, api_client):
         response = api_client.get(reverse("event-list"))
