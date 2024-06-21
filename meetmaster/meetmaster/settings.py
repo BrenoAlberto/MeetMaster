@@ -41,12 +41,13 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django.contrib.postgres",
     "rest_framework",
+    "common",
     "users",
     "events",
 ]
 
 if config("DJANGO_DEVELOPMENT", default=False, cast=bool):
-    INSTALLED_APPS.append("django_extensions")
+    INSTALLED_APPS.extend(["django_extensions"])
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",

@@ -1,0 +1,35 @@
+services:
+  db:
+    image: postgres:16.2
+    volumes:
+      - mm_pg_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+
+  redis:
+    image: redis:7.0.11-alpine
+    ports:
+      - "6379:6379"
+
+  web:
+    build: .
+    command: python /code/meetmaster/manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/usr/src/app
+    ports:
+      - "8002:8000"
+    depends_on:
+      - db
+      - redis
+    environment:
+      - DEBUG=0
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      - DEFAULT_FROM_EMAIL=noreply@meetmaster.com
+volumes:
+  mm_pg_data:
