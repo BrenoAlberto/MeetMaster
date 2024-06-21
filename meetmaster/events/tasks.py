@@ -47,7 +47,7 @@ def update_event_statuses(batch_size=1000):
     now = timezone.now()
     while True:
         event_ids = list(
-            Event.objects.filter(status=Event.Status.CANCELED, date__lt=now).values_list("id", flat=True)[:batch_size]
+            Event.objects.filter(status=Event.Status.INCOMING, date__lt=now).values_list("id", flat=True)[:batch_size]
         )
         if not event_ids:
             break
