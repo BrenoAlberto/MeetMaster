@@ -3,3 +3,4 @@ notes/
 venv/
 */pre-commit
 media/
+celerybeat-schedule.db

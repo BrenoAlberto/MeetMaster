@@ -157,6 +157,10 @@ CELERY_TASK_SERIALIZER = "json"
 CELERY_RESULT_SERIALIZER = "json"
 CELERY_TIMEZONE = "UTC"
 
+CELERY_BEAT_SCHEDULE = {
+    "update_event_statuses": {"task": "events.tasks.update_event_statuses", "schedule": 30.0},
+}
+
 DEFAULT_FROM_EMAIL = config("DEFAULT_FROM_EMAIL")
 if config("EMAIL_HOST", default=None):
     EMAIL_HOST = config("EMAIL_HOST")
