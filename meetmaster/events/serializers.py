@@ -8,18 +8,15 @@ from .tasks import send_notification
 
 
 class EventSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(read_only=True)
     total_attendees = serializers.SerializerMethodField()
-    status = serializers.ChoiceField(choices=Event.Status.choices, required=False)
+    status = serializers.ChoiceField(choices=Event.Status.choices, read_only=True, source="get_status_display")
     owner = serializers.HiddenField(default=serializers.CurrentUserDefault())
 
     class Meta:
         model = Event
         fields = "__all__"
         read_only_fields = ["created", "updated", "status", "total_attendees"]
-
-    def create(self, validated_data):
-        validated_data["status"] = Event.Status.INCOMING
-        return super().create(validated_data)
 
     def update(self, instance, validated_data):
         status_changed = model_data_prop_was_changed(instance, validated_data, "status")
@@ -53,3 +50,9 @@ class EventSerializer(serializers.ModelSerializer):
     @extend_schema_field(OpenApiTypes.INT)
     def get_total_attendees(self, obj):
         return obj.attendees.count()
+
+
+class CreateEventSerializer(EventSerializer):
+    class Meta:
+        model = Event
+        fields = ["id", "title", "description", "date", "location", "status", "owner"]

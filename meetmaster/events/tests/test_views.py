@@ -80,6 +80,7 @@ class TestEventViewSet:
         assert response.status_code == status.HTTP_201_CREATED
         new_event = Event.objects.get(id=response.data["id"])
         assert new_event.owner == user1
+        assert new_event.status == Event.Status.INCOMING
 
     def test_auth_user_cannot_create_event_with_past_date(self, api_client, create_users):
         user1 = create_users["user1"]

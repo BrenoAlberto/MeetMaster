@@ -5,7 +5,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from .models import Event
-from .serializers import EventSerializer
+from .serializers import CreateEventSerializer, EventSerializer
 
 
 @extend_schema_view(
@@ -41,7 +41,11 @@ from .serializers import EventSerializer
 )
 class EventViewSet(viewsets.ModelViewSet):
     queryset = Event.objects.all()
-    serializer_class = EventSerializer
+
+    def get_serializer_class(self):
+        if self.action == "create":
+            return CreateEventSerializer
+        return EventSerializer
 
     def get_permissions(self):
         permission_classes = {
