@@ -137,4 +137,7 @@ Notificações:
 - **Adicionar a si como participante**: Usuário é notificado por email
 - **Remover a si como participante**: Usuário é notificado por email
 
+Agendamentos:
+- **Atualização de status de evento**: A cada 30 segundos é feita uma query por eventos com Status.INCOMING e Data de início menor que a data atual. Se encontrados, o status é atualizado para Status.FINISHED. A query pelos campos date e status faz uso de índices compostos.
+
 </details>
