@@ -51,15 +51,27 @@ Se você preferir não usar o VSCode Dev Containers, você pode executar o conta
     venv
     ```
 
-4. Execute os testes com:
-    ```sh
-    pytest meetmaster -n auto
-    ```
+</details>
 
-5. Ou execute o servidor com:
-    ```sh
-    python meetmaster/manage.py runserver [PORT - opcional]
-    ```
+<details>
+<summary><strong>Executando os Testes</strong></summary>
+
+Após ativar o ambiente virtual:
+
+```sh
+pytest meetmaster -n auto
+```
+
+</details>
+
+<details>
+<summary><strong>Executando o Servidor</strong></summary>
+
+Após ativar o ambiente virtual:
+
+```sh
+python meetmaster/manage.py runserver [PORT - opcional]
+```
 
 </details>
 
