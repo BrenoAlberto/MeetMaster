@@ -5,7 +5,7 @@
 - Docker
 - (Opcional) VSCode e Dev Containers (ms-vscode-remote.remote-containers)
 
-## Configuração do Ambiente de Desenvolvimento
+## Executando o Container de Desenvolvimento
 
 <details>
 <summary><strong>1a. Configurando o Container de Desenvolvimento com VSCode</strong></summary>
@@ -59,7 +59,7 @@ Se você preferir não usar o VSCode Dev Containers, você pode executar o conta
 Após ativar o ambiente virtual:
 
 ```sh
-pytest meetmaster -n auto
+pytest ~/MeetMaster/meetmaster -n auto
 ```
 
 </details>
@@ -70,7 +70,29 @@ pytest meetmaster -n auto
 Após ativar o ambiente virtual:
 
 ```sh
-python meetmaster/manage.py runserver [PORT - opcional]
+python ~/MeetMaster/meetmaster/manage.py runserver [PORT - opcional]
+```
+
+</details>
+
+<details>
+<summary><strong>4. Executando um Worker Celery</strong></summary>
+
+Após ativar o ambiente virtual:
+
+```sh
+celery --workdir=./meetmaster -A meetmaster worker -l info
+```
+
+</details>
+
+<details>
+<summary><strong>5. Executando um Worker Celery Beat</strong></summary>
+
+Após ativar o ambiente virtual:
+
+```sh
+celery --workdir=./meetmaster -A meetmaster beat -l info
 ```
 
 </details>
