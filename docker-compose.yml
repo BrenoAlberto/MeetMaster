@@ -23,6 +23,7 @@ services:
     depends_on:
       - db
       - redis
+      - migration
     environment:
       - DEBUG=0
       - POSTGRES_DB=postgres
@@ -31,5 +32,39 @@ services:
       - CELERY_BROKER_URL=redis://redis:6379/0
       - CELERY_RESULT_BACKEND=redis://redis:6379/0
       - DEFAULT_FROM_EMAIL=noreply@meetmaster.com
+
+  migration:
+    build: .
+    command: python /code/meetmaster/manage.py migrate --noinput
+    volumes:
+      - .:/usr/src/app
+    depends_on:
+      - db
+    environment:
+      - DEBUG=0
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      - DEFAULT_FROM_EMAIL=noreply@meetmaster.com
+
+  celery:
+    build: .
+    command: celery --workdir=/code/meetmaster -A meetmaster worker -l info
+    volumes:
+      - .:/usr/src/app
+    depends_on:
+      - db
+      - redis
+    environment:
+      - DEBUG=0
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      - DEFAULT_FROM_EMAIL=noreply@meetmaster.com
+
 volumes:
   mm_pg_data:
