@@ -35,8 +35,8 @@ def create_event(create_users):
 
 
 @pytest.fixture
-def mock_send_notification():
-    with patch("events.tasks.send_notification.delay") as mock:
+def mock_send_notification_to_all_attendees():
+    with patch("events.tasks.send_notification_to_all_attendees.delay") as mock:
         yield mock
 
 
@@ -162,20 +162,22 @@ class TestEventViewSet:
         assert response.status_code == status.HTTP_400_BAD_REQUEST
         assert "Status can only be updated to 'Canceled'." in response.data["status"]
 
-    def test_not_notified_twice_on_double_cancel(self, api_client, create_users, create_event, mock_send_notification):
+    def test_not_notified_twice_on_double_cancel(
+        self, api_client, create_users, create_event, mock_send_notification_to_all_attendees
+    ):
         user1 = create_users["user1"]
         login(api_client, user1.username, "password")
         data = {"status": Event.Status.CANCELED}
         patch_event(api_client, create_event.pk, data)
         create_event.refresh_from_db()
 
-        mock_send_notification.assert_called_once()
-        mock_send_notification.reset_mock()
+        mock_send_notification_to_all_attendees.assert_called_once()
+        mock_send_notification_to_all_attendees.reset_mock()
 
         patch_event(api_client, create_event.pk, data)
         create_event.refresh_from_db()
 
-        mock_send_notification.assert_not_called()
+        mock_send_notification_to_all_attendees.assert_not_called()
 
     def test_auth_user_can_only_update_status_to_cancel(self, api_client, create_users, create_event):
         user1 = create_users["user1"]

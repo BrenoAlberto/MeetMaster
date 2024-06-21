@@ -4,7 +4,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from .models import Event
-from .serializers import EventCancelSerializer, EventSerializer
+from .serializers import EventAttendeeSerializer, EventCancelSerializer, EventSerializer
 
 
 class EventViewSet(viewsets.ModelViewSet):
@@ -13,6 +13,8 @@ class EventViewSet(viewsets.ModelViewSet):
     def get_serializer_class(self):
         if self.action == "cancel":
             return EventCancelSerializer
+        elif self.action in ["attende", "remove_attendee"]:
+            return EventAttendeeSerializer
         return EventSerializer
 
     def get_permissions(self):
@@ -37,22 +39,27 @@ class EventViewSet(viewsets.ModelViewSet):
         if request.user == event.owner or request.user in event.attendees.all():
             attendees = event.attendees.all()
             attendee_data = [{"id": attendee.id, "username": attendee.username} for attendee in attendees]
-            return Response(attendee_data)
-        else:
-            return Response({"detail": "Not authorized to view attendee details"}, status=status.HTTP_403_FORBIDDEN)
+            return Response(attendee_data, status=status.HTTP_200_OK)
+        return Response({"detail": "Not authorized to view attendee details"}, status=status.HTTP_403_FORBIDDEN)
 
     @action(detail=True, methods=["post"])
     def attende(self, request, pk=None):
         event = self.get_object()
-        event.attendees.add(request.user)
-        event.save()
+        if request.user in event.attendees.all():
+            return Response({"detail": "User is already an attendee."}, status=status.HTTP_400_BAD_REQUEST)
+        serializer = self.get_serializer(event, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.add_attendee(event)
         return Response({"status": "attendee added"}, status=status.HTTP_200_OK)
 
     @action(detail=True, methods=["post"])
     def remove_attendee(self, request, pk=None):
         event = self.get_object()
-        event.attendees.remove(request.user)
-        event.save()
+        if request.user not in event.attendees.all():
+            return Response({"detail": "User is not an attendee."}, status=status.HTTP_400_BAD_REQUEST)
+        serializer = self.get_serializer(event, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.remove_attendee(event)
         return Response({"status": "attendee removed"}, status=status.HTTP_200_OK)
 
     @action(detail=True, methods=["post"])

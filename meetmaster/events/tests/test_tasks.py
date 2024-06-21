@@ -5,7 +5,7 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.utils import timezone
 from events.models import Event, Notification
-from events.tasks import send_notification
+from events.tasks import send_notification_to_all_attendees
 
 User = get_user_model()
 
@@ -33,11 +33,11 @@ def event(create_users):
 
 @pytest.mark.django_db
 @patch("events.tasks.send_mail")
-def test_send_notification(mock_send_mail, event, create_users):
+def test_send_notification_to_all_attendees(mock_send_mail, event, create_users):
     user1, user2 = create_users
     message = "This is a test notification."
     subject = "Test Subject"
-    send_notification(event.id, message, subject)
+    send_notification_to_all_attendees(event.id, message, subject)
 
     assert mock_send_mail.call_count == 2
 
@@ -61,11 +61,11 @@ def test_send_notification(mock_send_mail, event, create_users):
 
 @pytest.mark.django_db
 @patch("events.tasks.send_mail")
-def test_send_notification_no_attendees(mock_send_mail, event):
+def test_send_notification_to_all_attendees_no_attendees(mock_send_mail, event):
     event.attendees.clear()
     message = "This is a test notification."
     subject = "Test Subject"
-    send_notification(event.id, message, subject)
+    send_notification_to_all_attendees(event.id, message, subject)
 
     assert mock_send_mail.call_count == 0
 
