@@ -63,7 +63,7 @@ class TestUserViewSet:
     @pytest.mark.parametrize(
         "username, password, expected_fields",
         [
-            ("admin_user", "password", ["email", "is_superuser", "date_joined"]),
+            ("admin_user", "password", ["email", "date_joined"]),
             ("user2", "password", []),
         ],
     )
@@ -142,6 +142,8 @@ class TestUserViewSet:
             "username": "new_user",
             "password": "new_password",
             "email": "new_user@example.com",
+            "first_name": "New",
+            "last_name": "User",
         }
         response = api_client.post(url, data)
         new_user = get_user_model().objects.get(username="new_user")
@@ -170,12 +172,12 @@ class TestUserViewSet:
         assert response.status_code == status.HTTP_400_BAD_REQUEST
         assert "email" in response.data
 
-    # def test_user_can_change_password(self, api_client, create_users):
-    #     user1 = create_users["user1"]
-    #     login(api_client, "user1", "password")
-    #     url = reverse("customuser-change-password", kwargs={"pk": user1.pk})
-    #     data = {"old_password": "password", "new_password": "new_password"}
-    #     response = api_client.post(url, data)
-    #     assert response.status_code == status.HTTP_200_OK
-    #     user1.refresh_from_db()
-    #     assert user1.check_password("new_password")
+    def test_user_can_change_password(self, api_client, create_users):
+        user1 = create_users["user1"]
+        login(api_client, "user1", "password")
+        url = reverse("customuser-change-password", kwargs={"pk": user1.pk})
+        data = {"old_password": "password", "new_password": "new_password"}
+        response = api_client.post(url, data)
+        assert response.status_code == status.HTTP_200_OK
+        user1.refresh_from_db()
+        assert user1.check_password("new_password")
