@@ -1,11 +1,11 @@
 # MeetMaster - Event Management System
 
-## Development Environment Setup
-
 ### Local Requirements
 
 - Docker
 - (Optional) VSCode and Dev Containers (ms-vscode-remote.remote-containers)
+
+## Development Environment Setup
 
 <details>
 <summary><strong>Setting Up Development Container with VSCode</strong></summary>
@@ -63,8 +63,7 @@ If you prefer not to use VSCode Dev Containers, you can run the developer contai
 
 </details>
 
-<details>
-<summary><strong>Running the Production Container</strong></summary>
+## Running the Production Container
 
 To run the production container, execute the following commands:
 
@@ -82,5 +81,3 @@ To run the production container, execute the following commands:
     ```sh
     docker compose up
     ```
-
-</details>
