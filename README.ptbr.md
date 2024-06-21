@@ -8,7 +8,7 @@
 ## Configuração do Ambiente de Desenvolvimento
 
 <details>
-<summary><strong>Configurando o Container de Desenvolvimento com VSCode</strong></summary>
+<summary><strong>1a. Configurando o Container de Desenvolvimento com VSCode</strong></summary>
 
 Siga estes passos para configurar um container de desenvolvimento com todas as ferramentas e dependências necessárias para o projeto.
 
@@ -32,7 +32,7 @@ Siga estes passos para configurar um container de desenvolvimento com todas as f
 </details>
 
 <details>
-<summary><strong>Executando o Container de Desenvolvimento sem o VSCode Dev Containers</strong></summary>
+<summary><strong>1b. Executando o Container de Desenvolvimento sem o VSCode Dev Containers</strong></summary>
 
 Se você preferir não usar o VSCode Dev Containers, você pode executar o container de desenvolvimento diretamente usando o Docker:
 
@@ -54,7 +54,7 @@ Se você preferir não usar o VSCode Dev Containers, você pode executar o conta
 </details>
 
 <details>
-<summary><strong>Executando os Testes</strong></summary>
+<summary><strong>2. Executando os Testes</strong></summary>
 
 Após ativar o ambiente virtual:
 
@@ -65,7 +65,7 @@ pytest meetmaster -n auto
 </details>
 
 <details>
-<summary><strong>Executando o Servidor</strong></summary>
+<summary><strong>3. Executando o Servidor</strong></summary>
 
 Após ativar o ambiente virtual:
 
